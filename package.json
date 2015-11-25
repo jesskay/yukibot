@@ -1,0 +1,16 @@
+{
+  "name": "yukibot",
+  "version": "0.0.1",
+  "description": "Discord bot for general channel utilities and whatever else I feel like adding",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jess Kay",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^5.0.1",
+    "jsonfile": "^2.2.3",
+    "request": "^2.67.0"
+  }
+}
