@@ -1,3 +1,7 @@
+var randomChoice = (choices) => {
+    return choices[Math.floor(Math.random() * choices.length)];
+};
+
 exports['load'] = (registerCommand) => {
     registerCommand('roll', ['dice'], 'words', (api, args) => {
 	var rolls = [];
@@ -35,11 +39,37 @@ exports['load'] = (registerCommand) => {
 	if(args.length <= 1) {
 	    api.reply("That's not even a choice, silly.");
 	} else {
-	    api.reply(args[Math.floor(Math.random() * args.length)]);
+	    api.reply(randomChoice(args));
 	}
     }, "choice <comma-separated options>: Choose between a number of different options.");
+
+    registerCommand('8ball', ['8-ball'], '', (api) => {
+	api.reply(randomChoice([
+	    "It is certain.", "It is decidedly so.", "Without a doubt.", "Yes, definitely.",
+	    "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.",
+	    "Yes.", "Signs point to yes.", "Reply hazy, try again.", "Ask again later.",
+	    "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.",
+	    "Don't count on it.", "My reply is no.", "My sources say no.",
+	    "Outlook not so good.", "Very doubtful."
+	]));
+    }, "8ball <question>: Consult the wisdom of the magic 8 ball.");
+
+    registerCommand('grey', ['grey-scale', 'anal'], '', (api) => {
+	api.reply(randomChoice([
+	    "Bend over.", "Fuck off.", "Suck my dick.", "No.", "Ugh.",
+	    "*Slaps you with his dick.*", "I'll fuck you later.", "Anal."
+	]));
+    }, "grey <question>: Consult the wisdom of... Grey Scale?");
+
+    registerCommand('flaxx', ['slut'], '', (api) => {
+	api.reply(randomChoice([
+	    "Please fuck my throat", "Can I suck your balls, please?", "*bends over*",
+	    "*spreads buttcheeks*", "*opens mouth*", "Absolutely!", "Uh... No?",
+	    "I could so go for a glass of cum right now.", "*idly sucks dick*"
+	]));
+    }, "grey <question>: Consult the wisdom of... Grey Scale?");
 };
 
 exports['unload'] = (unregisterCommand) => {
-    ['roll', 'flip', 'choice'].forEach(cmdName => unregisterCommand(cmdName));
+    ['roll', 'flip', 'choice', '8ball', 'grey', 'flaxx'].forEach(cmdName => unregisterCommand(cmdName));
 };
