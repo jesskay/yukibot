@@ -126,6 +126,11 @@ registerCommand('help', ['?'], 'raw', (api, argStr) => {
 
 loadModules();
 
+c.on('disconnected', () => {
+    console.log("Disconnected. Time to die!");
+    process.exit(1);
+});
+
 c.on('message', msg => {
     if(msg.author.id !== c.user.id && msg.content !== '') {
 	var tokens = msg.content.split(' ');
