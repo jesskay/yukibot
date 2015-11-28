@@ -11,7 +11,7 @@ exports['load'] = (registerCommand) => {
 	    };
 	});
 	if(rolls.length === 0) {
-	    rolls = [Math.floor(Math.random() * 6) + 1]
+	    rolls = [Math.floor(Math.random() * 6) + 1];
 	}
 	
 	api.reply(rolls.map(x => x.toString()).join(', '));
@@ -67,7 +67,7 @@ exports['load'] = (registerCommand) => {
 	    "*spreads buttcheeks*", "*opens mouth*", "Absolutely!", "Uh... No?",
 	    "I could so go for a glass of cum right now.", "*idly sucks dick*"
 	]));
-    }, "grey <question>: Consult the wisdom of... Grey Scale?");
+    }, "flaxx <question>: Consult the \"wisdom\" of Flaxx.");
 };
 
 exports['unload'] = (unregisterCommand) => {
