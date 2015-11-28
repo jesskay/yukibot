@@ -7,7 +7,7 @@ exports['load'] = (registerCommand) => {
 	    {url: "https://e621.net/post/index.json?limit=1&tags=" + encodeURIComponent(tags), json: true},
 	    (err, res, body) => {
 		if(body.length === 0) {
-		    api.reply("Sorry, couldn't find anything. :<")
+		    api.reply("Sorry, couldn't find anything. :<");
 		} else {
 		    var resultMsg = [];
 		    resultMsg.push("Okay, I think I found something~");
