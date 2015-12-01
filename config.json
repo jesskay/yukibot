@@ -1,4 +1,4 @@
 {
-    "modules": ["random", "imageboard"],
+    "modules": ["random", "imageboard", "silly"],
     "adminIds": ["49288350644834304", "49321607969116160"]
 }
