@@ -170,7 +170,7 @@ registerCommand('-core-', 'help', ['?'], 'raw', (api, argStr) => {
 	    
 	    helpMsg.push("```");
 	    
-	    api.reply(helpMsg.join('\n'));
+	    api.say(helpMsg.join('\n'));
 	} else {
 	    api.reply("Sorry, I don't think I've heard of that command. :<")
 	}
@@ -219,6 +219,15 @@ c.on('message', msg => {
 	}
 
 	var clientApi = {
+	    'resolveUserMention': userStr => {
+		if(userStr.match(/^<@\d+>/)) {
+		    return c.users.get('id', userStr.slice(2, -1)).username;
+		} else if(userStr.match(/@.*/)) {
+		    return userStr.slice(1);
+		} else {
+		    return userStr;
+		}
+	    },
 	    'reply': replyMsg => {
 		if(msg.channel instanceof discord.PMChannel) {
 		    c.sendMessage(msg.channel, replyMsg);
