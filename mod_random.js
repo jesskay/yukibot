@@ -70,6 +70,4 @@ exports['load'] = (registerCommand) => {
     }, "flaxx <question>: Consult the \"wisdom\" of Flaxx.");
 };
 
-exports['unload'] = (unregisterCommand) => {
-    ['roll', 'flip', 'choice', '8ball', 'grey', 'flaxx'].forEach(cmdName => unregisterCommand(cmdName));
-};
+exports['unload'] = () => {};

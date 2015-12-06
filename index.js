@@ -8,9 +8,14 @@ var c = new discord.Client();
 
 var commands = {};
 var aliases = {};
-var modules = {};
+var modules = {"-core-":{}};
 
-var registerCommand = (cmdName, cmdAliases, argMode, cmdFunc, desc) => {
+var registerCommand = (moduleName, cmdName, cmdAliases, argMode, cmdFunc, desc) => {
+    if(modules[moduleName]["commands"]) {
+	modules[moduleName].commands.push(cmdName);
+    } else {
+	modules[moduleName].commands = [cmdName];
+    }
     commands[cmdName] = cmdFunc;
     commands[cmdName].argMode = argMode;
     commands[cmdName].aliases = cmdAliases;
@@ -19,6 +24,9 @@ var registerCommand = (cmdName, cmdAliases, argMode, cmdFunc, desc) => {
 };
 
 var unregisterCommand = cmdName => {
+    if(!(commands[cmdName])) {
+	return;
+    }
     commands[cmdName].aliases.forEach(alias => delete aliases[alias]);
     delete commands[cmdName];
 };
@@ -29,7 +37,10 @@ var loadModules = () => {
 	    modules[moduleName] = require('./mod_' + moduleName);
 	    modules[moduleName].name = moduleName;
 	    modules[moduleName].requirePath = './mod_' + moduleName;
-	    modules[moduleName].load(registerCommand);
+	    var modulizedRegisterCommand = (cmdName, cmdAliases, argMode, cmdFunc, desc) => {
+		registerCommand(moduleName, cmdName, cmdAliases, argMode, cmdFunc, desc);
+	    };
+	    modules[moduleName].load(modulizedRegisterCommand);
 	    console.log("Loaded '" + moduleName + "'");
 	} catch(e) {
 	    console.log("Failed to load '" + moduleName + "':");
@@ -40,13 +51,18 @@ var loadModules = () => {
 
 var unloadModules = () => {
     Object.keys(modules).forEach(moduleName => {
-	modules[moduleName].unload(unregisterCommand);
+	modules[moduleName].unload();
+	if(modules[moduleName]["commands"]) {
+	    modules[moduleName].commands.forEach((cmdName) => {
+		unregisterCommand(cmdName);
+	    });
+	};
 	delete require.cache[require.resolve(modules[moduleName].requirePath)];
 	delete modules[moduleName];
     });
 };
 
-registerCommand('reload', [], '', (api) => {
+registerCommand('-core-', 'reload', [], '', (api) => {
     if(api.userIsAdmin) {
 	unloadModules();
 	config = jsonfile.readFileSync('./config.json');
@@ -57,7 +73,7 @@ registerCommand('reload', [], '', (api) => {
     }
 }, "reload: Reload all modules [admin only].");
 
-registerCommand('restart', ['goodbye', 'bye', 'quit'], '', (api) => {
+registerCommand('-core-', 'restart', ['goodbye', 'bye', 'quit'], '', (api) => {
     if(api.userIsAdmin) {
 	console.log("Bye!");
 	c.logout().then(process.exit);
@@ -66,7 +82,7 @@ registerCommand('restart', ['goodbye', 'bye', 'quit'], '', (api) => {
     }
 }, "restart: Fully restart the bot [admin only].");
 
-registerCommand('join', [], 'raw',(api, argStr) => {
+registerCommand('-core-', 'join', [], 'raw',(api, argStr) => {
     if(api.userIsAdmin) {
 	c.joinServer(argStr).catch(reason => {
 	    api.reply("Uh oh.");
@@ -77,7 +93,7 @@ registerCommand('join', [], 'raw',(api, argStr) => {
     }
 }, "join <invite>: Join another server using instant invite URL [admin only].");
 
-registerCommand('help', ['?'], 'raw', (api, argStr) => {
+registerCommand('-core-', 'help', ['?'], 'raw', (api, argStr) => {
     if(argStr.length > 0) {
 	if(aliases[argStr.toLowerCase()]) {
 	    var cmd = commands[aliases[argStr.toLowerCase()]];

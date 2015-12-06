@@ -21,6 +21,5 @@ exports['load'] = (registerCommand) => {
     }, "snowpoff: And this... is a useless command. Fun though!");
 };
 
-exports['unload'] = (unregisterCommand) => {
-    ['snowpoff'].forEach(cmdName => unregisterCommand(cmdName));
-};
+exports['unload'] = () => {};
+

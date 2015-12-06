@@ -47,6 +47,4 @@ exports['load'] = (registerCommand) => {
     }, "gelbooru <tags>: links a random image from the tag(s) provided");
 };
 
-exports['unload'] = (unregisterCommand) => {
-    ['e621', 'gelbooru'].forEach(cmdName => unregisterCommand(cmdName));
-};
+exports['unload'] = () => {};
