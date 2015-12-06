@@ -26,7 +26,7 @@ exports["load"] = (registerCommand, moduleStorage) => {
 	    } else {
 		var entries = moduleStorage.getItem(parsedCmd.entryKey);
 		if(entryType === "quote") { // nasty special case
-		    return "<" + parsedCmd.entryName + ">  " + entries[Math.floor(Math.random() * entries.length)];
+		    return "<" + parsedCmd.entryName + "> " + entries[Math.floor(Math.random() * entries.length)];
 		} else {
 		    return entries[Math.floor(Math.random() * entries.length)];
 		}
@@ -47,7 +47,7 @@ exports["load"] = (registerCommand, moduleStorage) => {
 	    } else {
 		var entries = moduleStorage.getItem(parsedCmd.entryKey);
 		if(entryType === "quote") { // nasty special case
-		    return entries.map(q => "<" + parsedCmd.entryName + ">  " + q).join("\n");
+		    return entries.map(q => "<" + parsedCmd.entryName + "> " + q).join("\n");
 		} else {
 		    return entries.join("\n");
 		}
