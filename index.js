@@ -224,12 +224,19 @@ c.on('message', msg => {
 
 	var clientApi = {
 	    'resolveUserMention': userStr => {
+		var user = null;
 		if(userStr.match(/^<@\d+>/)) {
-		    return c.users.get('id', userStr.slice(2, -1)).username;
-		} else if(userStr.match(/@.*/)) {
-		    return userStr.slice(1);
+		    user = c.users.get('id', userStr.slice(2, -1));
 		} else {
-		    return userStr;
+		    if(userStr.match(/@.*/))
+			userStr = userStr.slice(1);
+		    user = c.users.filter(user => user.username.toLowerCase() === userStr.toLowerCase())[0];
+		}
+		
+		if(user) {
+		    return {idOrFallback: "<@" + user.id + ">", username: user.username};
+		} else {
+		    return {idOrFallback: userStr, username: userStr};
 		}
 	    },
 	    'reply': replyMsg => {
