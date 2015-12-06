@@ -104,8 +104,12 @@ var loadModules = () => {
 };
 
 var unloadModules = () => {
-    Object.keys(modules).forEach(moduleName => {
-	modules[moduleName].unload();
+    Object.keys(modules).filter(m => m !== "-core-").forEach(moduleName => {
+	try {
+	    modules[moduleName].unload();
+	} catch(e) {
+	    // do jack shit
+	}
 	if(modules[moduleName]["commands"]) {
 	    modules[moduleName].commands.forEach((cmdName) => {
 		unregisterCommand(cmdName);
