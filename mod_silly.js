@@ -15,9 +15,9 @@ exports['load'] = (registerCommand, moduleStorage) => {
     }
     registerCommand('snowpoff', [], '', (api) => {
 	if(Math.random() > 0.995) {
-	    api.reply("```\n* Eh?\n* There's 30 G inside this... what is this?\n```");
+	    api.say("```\n* Eh?\n* There's 30 G inside this... what is this?\n```");
 	} else {
-	    api.reply("```\n" + snowPoffMessages[n] + "\n```");
+	    api.say("```\n" + snowPoffMessages[n] + "\n```");
 	    n = (n + 1) % snowPoffMessages.length;
 	    moduleStorage.setItem("poffcount", n);
 	}

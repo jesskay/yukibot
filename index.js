@@ -190,7 +190,7 @@ registerCommand('-core-', 'help', ['?'], 'raw', (api, argStr) => {
 	    helpMsg.push("```");
 	});
 
-	api.reply(helpMsg.join('\n'));
+	api.say(helpMsg.join('\n'));
     }
 }, "help: Shows help for this bot's commands. You're seeing it right now!");
 
@@ -225,6 +225,9 @@ c.on('message', msg => {
 		} else {
 		    c.sendMessage(msg.channel, '<@' + msg.author.id + '> ' + replyMsg);
 		}
+	    },
+	    'say': sayMsg => {
+		c.sendMessage(msg.channel, sayMsg);
 	    },
 	    'userIsAdmin': (config['adminIds'] || []).indexOf(msg.author.id) >= 0
 	};
