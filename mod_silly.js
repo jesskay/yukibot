@@ -1,4 +1,4 @@
-exports['load'] = (registerCommand) => {
+exports['load'] = (registerCommand, moduleStorage) => {
     var snowPoffMessages = [
 	"* It's a snow poff.",
 	"* And this... Is a snow poff.",
@@ -10,13 +10,16 @@ exports['load'] = (registerCommand) => {
 	"* What's this called?"
         ];
     var n = 0;
-    var n2 = (snowPoffMessages.length - 1);
+    if(moduleStorage.getItem("poffcount") !== null) {
+	n = moduleStorage.getItem("poffcount");
+    }
     registerCommand('snowpoff', [], '', (api) => {
 	if(Math.random() > 0.995) {
 	    api.reply("```\n* Eh?\n* There's 30 G inside this... what is this?\n```");
 	} else {
 	    api.reply("```\n" + snowPoffMessages[n] + "\n```");
 	    n = (n + 1) % snowPoffMessages.length;
+	    moduleStorage.setItem("poffcount", n);
 	}
     }, "snowpoff: And this... is a useless command. Fun though!");
 };
