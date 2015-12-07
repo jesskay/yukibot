@@ -11,6 +11,7 @@ var c = new discord.Client();
 var commands = {};
 var aliases = {};
 var modules = {"-core-":{}};
+var handlers = {};
 
 var registerCommand = (moduleName, cmdName, cmdAliases, argMode, cmdFunc, desc) => {
     if(modules[moduleName]["commands"]) {
@@ -94,7 +95,14 @@ var loadModules = () => {
 	    var modulizedRegisterCommand = (cmdName, cmdAliases, argMode, cmdFunc, desc) => {
 		registerCommand(moduleName, cmdName, cmdAliases, argMode, cmdFunc, desc);
 	    };
-	    modules[moduleName].load(modulizedRegisterCommand, new ModuleStorage(moduleName));
+	    var modulizedRegisterHandler = (handlerType, handlerFunc) => {
+		if(!handlers[handlerType]) {
+		    handlers[handlerType] = [];
+		}
+		handlerFunc.moduleName = moduleName;
+		handlers[handlerType].push(handlerFunc);
+	    };
+	    modules[moduleName].load(modulizedRegisterCommand, modulizedRegisterHandler, new ModuleStorage(moduleName));
 	    console.log("Loaded '" + moduleName + "'");
 	} catch(e) {
 	    console.log("Failed to load '" + moduleName + "':");
@@ -104,6 +112,7 @@ var loadModules = () => {
 };
 
 var unloadModules = () => {
+    handlers = {};
     Object.keys(modules).filter(m => m !== "-core-").forEach(moduleName => {
 	try {
 	    modules[moduleName].unload();
@@ -208,14 +217,13 @@ c.on('disconnected', () => {
 c.on('message', msg => {
     if(msg.author.id !== c.user.id && msg.content !== '') {
 	var tokens = msg.content.split(' ');
+	var cmd = null;
 	if(tokens[0] === '<@' + c.user.id + '>') {
 	    var argStr = tokens.slice(2).join(' ');
 	    var cmd = tokens[1].toLowerCase();
 	} else if(tokens[0][0] === '!') {
 	    var argStr = tokens.slice(1).join(' ');
 	    var cmd = tokens[0].slice(1).toLowerCase();
-	} else {
-	    return;
 	}
 
 	if(aliases.hasOwnProperty(cmd)) {
@@ -265,8 +273,11 @@ c.on('message', msg => {
 		var args = argStr.split(/\s+/);
 		commands[cmd](clientApi, args);
 	    }
-	} else if(msg.channel instanceof discord.PMChannel) {
-	    c.sendMessage(msg.channel, "No such command, sorry!");
+	} else if(handlers["message"]) {
+	    for(var i=0; i < handlers["message"].length; i++) {
+		if(handlers["message"][i](clientApi, msg.content))
+		    break;  // stop trying handlers on a truthy return/
+	    }
 	}
     }
 });

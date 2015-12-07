@@ -1,7 +1,7 @@
-exports["load"] = (registerCommand, moduleStorage) => {
+exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
     var commandsRegex = /^(show|add|list|kill)\s+([^\s]*)(\s(.*))?/;
 
-    var retrieveEntry = (entryType, api, argStr) => {
+    var retrieveEntry = (entryType, api, argStr, quietMode) => {
 	if(argStr.match(commandsRegex) === null) {
 	    argStr = "show " + argStr;
 	}
@@ -14,8 +14,8 @@ exports["load"] = (registerCommand, moduleStorage) => {
 	};
 
 	var hops = 0;
-	while(moduleStorage.getItem("alias/" + parsedCmd.entryName.toLowerCase()) !== null) {
-	    parsedCmd.entryName = moduleStorage.getItem("alias/" + parsedCmd.entryName.toLowerCase());
+	while(moduleStorage.getItem("db-alias/" + parsedCmd.entryName.toLowerCase()) !== null) {
+	    parsedCmd.entryName = moduleStorage.getItem(entryType + "-alias/" + parsedCmd.entryName.toLowerCase());
 	    hops = hops + 1;
 	    if(hops == 10) {
 		api.reply("TOO MUCH RECURSION, FUCK YOU!");
@@ -35,7 +35,8 @@ exports["load"] = (registerCommand, moduleStorage) => {
 	switch(parsedCmd.cmdName) {
 	case "show":
 	    if(moduleStorage.getItem(parsedCmd.entryKey) === null) {
-		api.reply("Nothing there!");
+		if(!quietMode)
+		    api.reply("Nothing there!");
 	    } else {
 		var entries = moduleStorage.getItem(parsedCmd.entryKey);
 		api.say("```\n" + entries[Math.floor(Math.random() * entries.length)] + "\n```");
@@ -103,11 +104,17 @@ exports["load"] = (registerCommand, moduleStorage) => {
 	"db list <topic>: Show all stored entries for a particular topic.",
 	"db kill <topic>: Remove the last entry added [admin only]."].join("\n"));
 
+    registerHandler("message", (api, msgContent) => {
+	if(msgContent.startsWith("!")) {
+	    retrieveEntry("db", api, "show " + msgContent.slice(1), true);
+	}
+    });
+
     registerCommand('quote-alias', ['qalias'], 'words', (api, args) => {
 	if(args.length !== 2) {
 	    api.reply("Stop being bad.");
 	} else {
-	    moduleStorage.setItem("alias/" + args[0].toLowerCase(), api.resolveUserMention(args[1]).idOrFallback);
+	    moduleStorage.setItem("quote-alias/" + args[0].toLowerCase(), api.resolveUserMention(args[1]).idOrFallback);
 	    api.reply("Aliased.");
 	}
     }, "quote-alias <alias> <user>: Add an alias for a user.");
@@ -116,7 +123,25 @@ exports["load"] = (registerCommand, moduleStorage) => {
 	if(args.length !== 1) {
 	    api.reply("Stop being bad.");
 	} else {
-	    moduleStorage.removeItem("alias/" + args[0].toLowerCase());
+	    moduleStorage.removeItem("quote-alias/" + args[0].toLowerCase());
+	    api.reply("Unaliased.");
+	}
+    },"quote-unalias <alias>: Remove an alias.");
+
+    registerCommand('db-alias', ['dbalias'], 'words', (api, args) => {
+	if(args.length !== 2) {
+	    api.reply("Stop being bad.");
+	} else {
+	    moduleStorage.setItem("db-alias/" + args[0].toLowerCase(), args[1].toLowerCase());
+	    api.reply("Aliased.");
+	}
+    }, "quote-alias <alias> <user>: Add an alias for a user.");
+
+    registerCommand('db-unalias', ['dbunalias'], 'words', (api, args) => {
+	if(args.length !== 1) {
+	    api.reply("Stop being bad.");
+	} else {
+	    moduleStorage.removeItem("db-alias/" + args[0].toLowerCase());
 	    api.reply("Unaliased.");
 	}
     },"quote-unalias <alias>: Remove an alias.");

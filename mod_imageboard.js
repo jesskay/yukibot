@@ -1,7 +1,7 @@
 var request = require('request');
 var cheerio = require('cheerio');
 
-exports['load'] = (registerCommand) => {
+exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
     registerCommand('e621', [], 'raw', (api, argStr) => {
 	var tags = "order:random " + argStr;
 	request(

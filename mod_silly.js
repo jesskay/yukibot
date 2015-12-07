@@ -1,4 +1,4 @@
-exports['load'] = (registerCommand, moduleStorage) => {
+exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
     var snowPoffMessages = [
 	"* It's a snow poff.",
 	"* And this... Is a snow poff.",
