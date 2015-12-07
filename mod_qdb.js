@@ -14,7 +14,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 	};
 
 	var hops = 0;
-	while(moduleStorage.getItem("db-alias/" + parsedCmd.entryName.toLowerCase()) !== null) {
+	while(moduleStorage.getItem(entryType + "-alias/" + parsedCmd.entryName.toLowerCase()) !== null) {
 	    parsedCmd.entryName = moduleStorage.getItem(entryType + "-alias/" + parsedCmd.entryName.toLowerCase());
 	    hops = hops + 1;
 	    if(hops == 10) {
