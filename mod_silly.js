@@ -1,3 +1,7 @@
+var randomChoice = (choices) => {
+	return choices[Math.floor(Math.random() * choices.length)];
+};
+
 exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 	var snowPoffMessages = [
 		"* It's a snow poff.",
@@ -22,6 +26,17 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 			moduleStorage.setItem("poffcount", n);
 		}
 	}, "snowpoff: And this... is a useless command. Fun though!");
+
+  var tableFlips = [
+    "(╯°Д°）╯︵ /(.□ . )",
+    "┬─┬﻿ ︵ /(.□. ）",
+    "┬─┬﻿ ノ( ゜-゜ノ)"
+  ];
+  registerHandler("message", (api, msgContent) => {
+		if(msgContent == "(╯°□°）╯︵ ┻━┻") {
+			api.reply(randomChoice(tableFlips));
+		}
+	});
 };
 
 exports['unload'] = () => {};
