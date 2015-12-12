@@ -10,7 +10,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 		"* What's this called?"
 	];
 	var n = 0;
-	if(moduleStorage.getItem("poffcount") !== null) {
+	if(moduleStorage.exists("poffcount")) {
 		n = moduleStorage.getItem("poffcount");
 	}
 	registerCommand('snowpoff', [], '', (api) => {
