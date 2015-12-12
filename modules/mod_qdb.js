@@ -14,7 +14,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 		};
 
 		var hops = 0;
-		while(moduleStorage.getItem(entryType + "-alias/" + parsedCmd.entryName.toLowerCase()) !== null) {
+		while(moduleStorage.exists(entryType + "-alias/" + parsedCmd.entryName.toLowerCase())) {
 			parsedCmd.entryName = moduleStorage.getItem(entryType + "-alias/" + parsedCmd.entryName.toLowerCase());
 			hops = hops + 1;
 			if(hops == 10) {
@@ -34,7 +34,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 
 		switch(parsedCmd.cmdName) {
 			case "show":
-				if(moduleStorage.getItem(parsedCmd.entryKey) === null) {
+				if(!moduleStorage.exists(parsedCmd.entryKey)) {
 					if(!quietMode)
 						api.reply("Nothing there!");
 				} else {
@@ -44,7 +44,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 				break;
 			case "add":
 				var entries = []
-				if(moduleStorage.getItem(parsedCmd.entryKey) !== null) {
+				if(moduleStorage.exists(parsedCmd.entryKey)) {
 					entries = moduleStorage.getItem(parsedCmd.entryKey);
 				}
 				if(entryType === "quote") { // nasty special case
@@ -56,7 +56,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 				api.reply("Added!");
 				break;
 			case "list":
-				if(moduleStorage.getItem(parsedCmd.entryKey) === null) {
+				if(!moduleStorage.exists(parsedCmd.entryKey)) {
 					api.reply("Nothing there!");
 				} else {
 					var entries = moduleStorage.getItem(parsedCmd.entryKey);
@@ -69,7 +69,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 					return;
 				}
 				var entries = []
-				if(moduleStorage.getItem(parsedCmd.entryKey) !== null) {
+				if(moduleStorage.exists(parsedCmd.entryKey)) {
 					entries = moduleStorage.getItem(parsedCmd.entryKey);
 				}
 				if(entries.length > 0) {
@@ -137,7 +137,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 			moduleStorage.setItem("db-alias/" + args[0].toLowerCase(), args[1].toLowerCase());
 			api.reply("Aliased.");
 		}
-	}, "quote-alias <alias> <user>: Add an alias for a user.");
+	}, "db-alias <alias> <user>: Add an alias for a user.");
 
 	registerCommand('db-unalias', ['dbunalias'], 'words', (api, args) => {
 		if(args.length !== 1) {
@@ -146,7 +146,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 			moduleStorage.removeItem("db-alias/" + args[0].toLowerCase());
 			api.reply("Unaliased.");
 		}
-	}, "quote-unalias <alias>: Remove an alias.");
+	}, "db-unalias <alias>: Remove an alias.");
 };
 
 exports["unload"] = () => {};
