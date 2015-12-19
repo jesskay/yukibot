@@ -33,7 +33,7 @@ exports["load"] = (bot) => {
   bot.registerCommand('-core-', 'help', ['?'], 'raw', (api, argStr) => {
   	if(argStr.length > 0) {
   		if(bot.aliases[argStr.toLowerCase()]) {
-  			var cmd = bot.commands[aliases[argStr.toLowerCase()]];
+  			var cmd = bot.commands[bot.aliases[argStr.toLowerCase()]];
   		} else {
   			var cmd = bot.commands[argStr.toLowerCase()];
   		}
