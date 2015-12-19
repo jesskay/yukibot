@@ -10,7 +10,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 		var parsedCmd = {
 			cmdName: rawParsedCmd[1],
 			entryName: rawParsedCmd[2],
-			content: (rawParsedCmd[4] || "").replace(/\s*```\s*/, "")
+			content: rawParsedCmd[4] || ""
 		};
 
 		var hops = 0;
@@ -39,7 +39,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 						api.reply("Nothing there!");
 				} else {
 					var entries = moduleStorage.getItem(parsedCmd.entryKey);
-					api.say("```\n" + entries[Math.floor(Math.random() * entries.length)] + "\n```");
+					api.say(entries[Math.floor(Math.random() * entries.length)]);
 				}
 				break;
 			case "add":
@@ -60,7 +60,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 					api.reply("Nothing there!");
 				} else {
 					var entries = moduleStorage.getItem(parsedCmd.entryKey);
-					api.say("```\n" + entries.join("\n") + "\n```");
+					api.say(entries.join("\n-\n"));
 				}
 				break;
 			case "kill":
@@ -79,7 +79,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 					} else {
 						moduleStorage.setItem(parsedCmd.entryKey, entries);
 					}
-					api.reply("Killed `" + removedEntry + "`");
+					api.reply("Killed '" + removedEntry + "'");
 				} else {
 					api.reply("Nothing to remove.");
 				}
