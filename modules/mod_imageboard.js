@@ -53,23 +53,23 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 			}
 		});
 	}, "gelbooru <tags>: links a random image from the tag(s) provided");
-
-var ratingToTag = {
-"safe": "rating:safe",
-"questionable": "rating:questionable",
-"explicit": "rating:explicit",
-"s": "rating:safe",
-"q": "rating:questionable",
-"e": "rating:explicit",
-"-safe": "-rating:safe",
-"-questionable": "-rating:questionable",
-"-explicit": "-rating:explicit",
-"-s": "-rating:safe",
-"-q": "-rating:questionable",
-"-e": "-rating:explicit",
-"lewd": "-rating:safe"
-};
-
+	
+	var ratingToTag = {
+		"safe": "rating:safe",
+		"questionable": "rating:questionable",
+		"explicit": "rating:explicit",
+		"s": "rating:safe",
+		"q": "rating:questionable",
+		"e": "rating:explicit",
+		"-safe": "-rating:safe",
+		"-questionable": "-rating:questionable",
+		"-explicit": "-rating:explicit",
+		"-s": "-rating:safe",
+		"-q": "-rating:questionable",
+		"-e": "-rating:explicit",
+		"lewd": "-rating:safe"
+	};
+	
 	registerCommand('am', [], 'words', (api, args) => {
 		var tags = "fox_ears fox_tail -spread_anus -huge_breasts -gigantic_breasts -gore -scat score:>50 " + (ratingToTag[args[0].toLowerCase()] || "rating:safe");
 		gelbooru(`${gbBaseUri}&limit=1&tags=${encodeURIComponent(tags)}`, (err, res, body) => {
