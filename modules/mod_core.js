@@ -1,4 +1,5 @@
-var vm = require('vm');
+var vm = require('vm'),
+    util = require('util');
 
 exports["load"] = (bot) => {
   bot.registerCommand('-core-', 'reload', [], '', (api) => {
@@ -34,11 +35,26 @@ exports["load"] = (bot) => {
 
 	bot.registerCommand('-core-', 'js', ['!'], 'raw', (api, argStr) => {
 		try {
-			api.reply(vm.runInNewContext(argStr, {}, {timeout: 10000}).toString());
+			api.reply(util.inspect(vm.runInNewContext(argStr, {}, {timeout: 10000})));
 		} catch(e) {
 			api.reply(e.toString());
 		}
 	}, "Run arbitrary Javascript code and reply with the result. Will fail if execution time exceeds 10 seconds.");
+
+	var persistentContext = vm.createContext({});
+	
+	bot.registerCommand('-core-', 'js-persist', ['jsp', '>'], 'raw', (api, argStr) => {
+		try {
+			api.reply(util.inspect(vm.runInContext(argStr, persistentContext, {timeout: 10000})));
+		} catch(e) {
+			api.reply(e.toString());
+		}
+	}, "Run arbitrary Javascript code in a persistent environment, and reply with the result. Will fail if execution time exceeds 10 seconds.");
+
+	bot.registerCommand('-core-', 'js-unpersist', ['jsup', '<'], '', (api) => {
+		persistentContext = vm.createContext({});
+		api.reply("Reset!");
+	}, "Resets the environment used by !js-persist to original state.");
 
   bot.registerCommand('-core-', 'help', ['?'], 'raw', (api, argStr) => {
   	if(argStr.length > 0) {
