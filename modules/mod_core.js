@@ -1,3 +1,5 @@
+var vm = require('vm');
+
 exports["load"] = (bot) => {
   bot.registerCommand('-core-', 'reload', [], '', (api) => {
   	if(api.userIsAdmin) {
@@ -29,6 +31,14 @@ exports["load"] = (bot) => {
   		api.reply("I don't think so, nya~");
   	}
   }, "join <invite>: Join another server using instant invite URL [admin only].");
+
+	bot.registerCommand('-core-', 'js', ['!'], 'raw', (api, argStr) => {
+		try {
+			api.reply(vm.runInNewContext(argStr, {}, {timeout: 10000}).toString());
+		} catch(e) {
+			api.reply(e.toString());
+		}
+	}, "Run arbitrary Javascript code and reply with the result. Will fail if execution time exceeds 10 seconds.");
 
   bot.registerCommand('-core-', 'help', ['?'], 'raw', (api, argStr) => {
   	if(argStr.length > 0) {
