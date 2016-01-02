@@ -109,6 +109,8 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 	registerHandler("message", (api, msgContent) => {
 		if(msgContent.startsWith("!")) {
 			retrieveEntry("db", api, "show " + msgContent.slice(1), true);
+		} else if(Math.random() > 0.995) {
+			retrieveEntry("db", api, "show _", true);
 		}
 	});
 
