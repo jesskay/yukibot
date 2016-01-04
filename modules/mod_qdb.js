@@ -1,5 +1,5 @@
 exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
-	var commandsRegex = /^(show|add|list|kill)\s+([^\s]*)(\s(.*))?/;
+	var commandsRegex = /^(show|add|list|kill)\s+([^\s]*)(\s([\s\S]*))?/m;
 
 	var retrieveEntry = (entryType, api, argStr, quietMode) => {
 		if(argStr.match(commandsRegex) === null) {
@@ -60,7 +60,7 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 					api.reply("Nothing there!");
 				} else {
 					var entries = moduleStorage.getItem(parsedCmd.entryKey);
-					api.say(entries.join("\n-\n"));
+					api.say(entries.join("\n"));
 				}
 				break;
 			case "kill":
