@@ -1,5 +1,5 @@
 exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
-	var commandsRegex = /^(show|add|list|kill)\s+([^\s]*)(\s([\s\S]*))?/m;
+	var commandsRegex = /^(show|add|list|kill)\s+([^\s]*)(\s([^]*))?/m;
 
 	var retrieveEntry = (entryType, api, argStr, quietMode) => {
 		if(argStr.match(commandsRegex) === null) {
