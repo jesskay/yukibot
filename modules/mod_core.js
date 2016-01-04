@@ -1,5 +1,6 @@
-var vm = require('vm'),
-    util = require('util');
+var vm = require('vm');
+var util = require('util');
+var jsonfile = require('jsonfile');
 
 exports["load"] = (bot) => {
   bot.registerCommand('-core-', 'reload', [], '', (api) => {
