@@ -1,4 +1,4 @@
 {
-    "modules": ["random", "imageboard", "silly", "qdb"],
-    "adminIds": ["49288350644834304", "49321607969116160"]
+	"modules": ["random", "imageboard", "silly", "qdb", "remindme"],
+	"adminIds": ["49288350644834304", "49321607969116160"]
 }
