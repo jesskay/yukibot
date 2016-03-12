@@ -100,7 +100,21 @@ exports["load"] = (bot) => {
   			helpMsg.push("```");
   		});
 
-  		api.say(helpMsg.join('\n'));
+  		var helpStr = "";
+      		var MAX_MSG_LENGTH = 2000;
+      		for(var i = 0; i <= helpMsg.length; i++) {
+        		if(i === helpMsg.length) {
+        	 		api.say(helpStr.slice(1));
+          			break;
+        		}
+
+        		if((helpStr.length + helpMsg[i].length) >= MAX_MSG_LENGTH) {
+          			api.say(helpStr.slice(1)); // drops the starting \n so we can be lazy and have it also help us avoid a +1 in the length test
+          			helpStr = "";
+        		}
+
+        		helpStr += "\n" + helpMsg[i];
+		}
   	}
   }, "help: Shows help for this bot's commands. You're seeing it right now!");
 }
