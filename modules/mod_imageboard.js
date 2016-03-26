@@ -88,6 +88,25 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
 			}
 		});
 	}, "am: links a random safe (usually, tagging is hard) foxie from gelbooru");
+	
+	registerCommand('riley', [], 'words', (api, args) => {
+		var tags = "akane_(naomi) " + (ratingToTag[args[0].toLowerCase()] || "rating:safe");
+		gelbooru(`${gbBaseUri}&limit=1&tags=${encodeURIComponent(tags)}`, (err, res, body) => {
+			var $ = cheerio.load(body, {xmlMode: true});
+			var count = parseInt($('posts').attr('count'), 10);
+			if(isNaN(count)) {
+				api.reply('Something went very wrong! Try again later maybe? :<');
+			} else {
+				var randomPost = Math.floor(Math.random() * count);
+				gelbooru(`${gbBaseUri}&limit=1&pid=${randomPost}&tags=${encodeURIComponent(tags)}`, (err, res, body) => {
+					var $ = cheerio.load(body, {xmlMode: true});
+					var resultPagelink = 'http://gelbooru.com/index.php?page=post&s=view&id=' + $('post').attr('id');
+					var resultHotlink = $('post').attr('file_url');
+					api.reply([resultPagelink, resultHotlink].join('\n'));
+				});
+			}
+		});
+	}, "riley: links a random safe (usually, tagging is hard) Akane from gelbooru");
 };
 
 exports['unload'] = () => {};
