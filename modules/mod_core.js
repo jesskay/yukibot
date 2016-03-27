@@ -34,7 +34,7 @@ exports["load"] = (bot) => {
   	}
   }, "join <invite>: Join another server using instant invite URL [admin only].");
 
-	bot.registerCommand('-core-', 'js', ['!'], 'raw', (api, argStr) => {
+	bot.registerCommand('-core-', 'js', [], 'raw', (api, argStr) => {
 		try {
 			api.reply(util.inspect(vm.runInNewContext(argStr, {}, {timeout: 10000})));
 		} catch(e) {
