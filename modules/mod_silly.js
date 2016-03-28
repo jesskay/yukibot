@@ -30,7 +30,8 @@ exports['load'] = (registerCommand, registerHandler, moduleStorage) => {
   var tableFlips = [
     "(╯°Д°）╯︵ /(.□ . )",
     "┬─┬﻿ ︵ /(.□. ）",
-    "┬─┬﻿ ノ( ゜-゜ノ)"
+    "┬─┬﻿ ノ( ゜-゜ノ)",
+    "(☞ﾟ∀ﾟ)☞ :･ﾟ✧･ﾟ ┬─┬"
   ];
   registerHandler("message", (api, msgContent) => {
 		if(msgContent == "(╯°□°）╯︵ ┻━┻") {
