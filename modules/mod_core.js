@@ -34,17 +34,39 @@ exports["load"] = (bot) => {
   	}
   }, "join <invite>: Join another server using instant invite URL [admin only].");
 
-	bot.registerCommand('-core-', 'js', [], 'raw', (api, argStr) => {
+	bot.registerCommand('-core-', 'js', ['$'], 'raw', (api, argStr) => {
+    var code = argStr;
+    var match;
+
+    console.log(argStr);
+
+    // JS doesn't support dot matching newline
+    if(match = code.match(/```\w*\n([\s\S]*?)\n```/i)) {
+      code = match[1];
+    } else if(match = code.match(/`(.*?)`/i)) {
+      code = match[1];
+    }
+
 		try {
-			api.reply(util.inspect(vm.runInNewContext(argStr, {}, {timeout: 10000})));
+			api.reply(util.inspect(vm.runInNewContext(code, {}, {timeout: 10000})));
 		} catch(e) {
 			api.reply(e.toString());
 		}
 	}, "Run arbitrary Javascript code and reply with the result. Will fail if execution time exceeds 10 seconds.");
 
 	var persistentContext = vm.createContext({});
-	
+
 	bot.registerCommand('-core-', 'js-persist', ['jsp', '>'], 'raw', (api, argStr) => {
+    var code = argStr;
+    var match = "";
+
+    // JS doesn't support dot matching newline
+    if(match = code.match(/```\w*\n([\s\S]*?)\n```/i)) {
+      code = match[1];
+    } else if(match = code.match(/`(.*?)`/i)) {
+      code = match[1];
+    }
+
 		try {
 			api.reply(util.inspect(vm.runInContext(argStr, persistentContext, {timeout: 10000})));
 		} catch(e) {
