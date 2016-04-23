@@ -1,7 +1,7 @@
 'use strict';
 
 exports.load = (registerCommand, registerHandler, moduleStorage) => {
-  var commandsRegex = /^(show|add|list|kill)\s+([^\s]*)(\s([^]*))?/m;
+  var commandsRegex = /^(show|add|list|indexes|kill)\s+([^\s]*)(?:\s([^]*))?/i;
 
   var retrieveEntry = (entryType, api, argStr, quietMode) => {
     if(argStr.match(commandsRegex) === null) {
@@ -12,7 +12,7 @@ exports.load = (registerCommand, registerHandler, moduleStorage) => {
     var parsedCmd = {
       cmdName: rawParsedCmd[1],
       entryName: rawParsedCmd[2],
-      content: rawParsedCmd[4] || ''
+      content: rawParsedCmd[3] || ''
     };
 
     var hops = 0;
@@ -27,7 +27,7 @@ exports.load = (registerCommand, registerHandler, moduleStorage) => {
 
     var quotedUser = null;
 
-    if(entryType === 'quote') { // nasty special case
+    if(entryType === 'quote') { // 1nasty special case
       quotedUser = api.resolveUserMention(parsedCmd.entryName);
       parsedCmd.entryName = quotedUser.idOrFallback;
     }
@@ -39,12 +39,13 @@ exports.load = (registerCommand, registerHandler, moduleStorage) => {
         if(!moduleStorage.exists(parsedCmd.entryKey)) {
           if(!quietMode)
             api.reply('Nothing there!');
-        } else {
-          var entries = moduleStorage.getItem(parsedCmd.entryKey);
-          api.say(entries[Math.floor(Math.random() * entries.length)]);
+          return false;
         }
 
-        break;
+        var entries = moduleStorage.getItem(parsedCmd.entryKey);
+        api.say(entries[Math.floor(Math.random() * entries.length)]);
+        return true;
+
       case 'add':
         var entries = [];
         if(moduleStorage.exists(parsedCmd.entryKey)) {
@@ -60,12 +61,27 @@ exports.load = (registerCommand, registerHandler, moduleStorage) => {
         moduleStorage.setItem(parsedCmd.entryKey, entries);
         api.reply('Added!');
         break;
+
       case 'list':
         if(!moduleStorage.exists(parsedCmd.entryKey)) {
           api.reply('Nothing there!');
         } else {
           var entries = moduleStorage.getItem(parsedCmd.entryKey);
           api.say(entries.join('\n'));
+        }
+
+        break;
+      case 'indexes':
+        if(!api.userIsAdmin) {
+          api.reply('Nay.');
+          return;
+        }
+
+        if(!moduleStorage.exists(parsedCmd.entryKey)) {
+          api.reply('Nothing there!');
+        } else {
+          var entries = moduleStorage.getItem(parsedCmd.entryKey);
+          api.say(entries.map((value, key) => `${key + 1}. ${value}`).join('\n'));
         }
 
         break;
@@ -80,8 +96,14 @@ exports.load = (registerCommand, registerHandler, moduleStorage) => {
           entries = moduleStorage.getItem(parsedCmd.entryKey);
         }
 
+        var index = parseInt(parsedCmd.content, 10);
+        index = index < 0 ? entries.length + index : index - 1; // allow negative indexes
+        if(isNaN(index) || index < 0 || index > entries.length - 1) {
+          index = entries.length - 1;
+        }
+
         if(entries.length > 0) {
-          var removedEntry = entries.pop();
+          var removedEntry = entries.splice(index, 1);
           if(entries.length === 0) {
             moduleStorage.removeItem(parsedCmd.entryKey);
           } else {
@@ -103,7 +125,8 @@ exports.load = (registerCommand, registerHandler, moduleStorage) => {
     'quote show <user>: As above.',
     'quote add <user> <quote>: Add a quote for a particular user.',
     'quote list <user>: Show all stored quotes for a particular user.',
-    'quote kill <user>: Remove the last quote added [admin only].'
+    'quote indexes <user>: Show all stored quotes (with their index) for a user.',
+    'quote kill <user> <b>: Remove a quote. [admin only]'
   ].join('\n'));
 
   registerCommand('db', [], 'raw', (api, argStr) => {
@@ -113,14 +136,15 @@ exports.load = (registerCommand, registerHandler, moduleStorage) => {
     'db show <topic>: As above.',
     'db add <topic> <content>: Add an entry for a particular topic.',
     'db list <topic>: Show all stored entries for a particular topic.',
-    'db kill <topic>: Remove the last entry added [admin only].'
+    'db indexes <user>: Show all stored entries (with their index) for a topic. [admin only]',
+    'db kill <topic> <n>: Remove an entry. [admin only]'
   ].join('\n'));
 
   registerHandler('message', (api, msgContent) => {
     if(msgContent.startsWith('!')) {
-      retrieveEntry('db', api, 'show ' + msgContent.slice(1), true);
+      return retrieveEntry('db', api, 'show ' + msgContent.slice(1), true);
     } else if(Math.random() > 0.9999) {
-      retrieveEntry('db', api, 'show _', true);
+      return retrieveEntry('db', api, 'show _', true);
     }
   });
 
