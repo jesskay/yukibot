@@ -17,7 +17,8 @@ const ratingToTag = {
   '-s': '-rating:safe',
   '-q': '-rating:questionable',
   '-e': '-rating:explicit',
-  'lewd': '-rating:safe'
+  'lewd': '-rating:safe',
+  'none': ''
 };
 
 function imageboardFetch(type, api, tags, prefix) {
@@ -53,6 +54,7 @@ exports.load = (registerCommand, registerHandler, moduleStorage) => {
   registerCommand('imageboard-add', ['ibadd'], 'raw', (api, argStr) => {
     var args = argStr.split(' ');
     var info = {
+      command: args[0],
       type: args[1],
       tags: args.slice(2)
     };
@@ -80,9 +82,10 @@ exports.load = (registerCommand, registerHandler, moduleStorage) => {
   registerHandler('message', (api, msgContent) => {
     if(msgContent.startsWith('!')) {
       var args = msgContent.slice(1).split(/\s+/);
+      var tags = args[1] || 'safe';
       if(moduleStorage.exists(args[0])) {
         var info = moduleStorage.getItem(args[0]);
-        var tags =  [].concat(info.tags, [ratingToTag[args[1].toLowerCase()] || 'rating:safe']);
+        var tags = [].concat(info.tags, [ratingToTag[tags.toLowerCase()] || 'rating:safe']);
         imageboardFetch(info.type, api, tags);
       }
 

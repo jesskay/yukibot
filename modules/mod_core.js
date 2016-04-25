@@ -28,7 +28,7 @@ exports.load = (bot) => {
       if(argStr[0] == '!') {
         argStr = argStr.substr(1);
       }
-      
+
       if(bot.aliases[argStr.toLowerCase()]) {
         var cmd = bot.commands[bot.aliases[argStr.toLowerCase()]];
       } else {
@@ -60,7 +60,7 @@ exports.load = (bot) => {
         helpStr += '\n!' + cmdName;
 
         if(bot.commands[cmdName].aliases.length > 0) {
-          helpStr += ' (aliases: !' + bot.commands[cmdName].aliases.join(', !') + ')';
+          helpStr += ' (or !' + bot.commands[cmdName].aliases.join(', !') + ')';
         }
       });
       helpStr += '```';
