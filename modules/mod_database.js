@@ -1,10 +1,8 @@
 'use strict';
 
-const MongoClient = require('mongodb').MongoClient;
 const Module = require('../lib/Module');
-
+const MongoClient = require('mongodb').MongoClient;
 const log = require('minilog')('database');
-require('minilog').enable();
 
 class DatabaseModule extends Module {
   constructor(name, core) {
@@ -13,7 +11,7 @@ class DatabaseModule extends Module {
   }
 
   initialize() {
-    MongoClient.connect(this.core.config.database.url)
+    MongoClient.connect(this.core.config.database)
       .then(db => {
         log.info('Connected.');
         this.db = db;

@@ -1,9 +1,7 @@
 'use strict';
 
 const Module = require('../lib/Module');
-
 const log = require('minilog')('silly');
-require('minilog').enable();
 
 class SillyModule extends Module {
   static get dependencies() {

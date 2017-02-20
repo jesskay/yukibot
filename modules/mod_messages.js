@@ -3,10 +3,7 @@
 
 const Module = require('../lib/Module');
 const assert = require('assert');
-const util = require('../lib/util');
-
 const log = require('minilog')('messages');
-require('minilog').enable();
 
 class MessagesModule extends Module {
   initialize() {

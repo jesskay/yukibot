@@ -2,9 +2,7 @@
 'use strict';
 
 const Module = require('../lib/Module');
-
 const log = require('minilog')('commands');
-require('minilog').enable();
 
 class CommandsModule extends Module {
   static get dependencies() {
