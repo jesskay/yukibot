@@ -1,24 +1,39 @@
+// jscs:disable disallowArrayDestructuringReturn
 'use strict';
 
 const Module = require('../lib/Module');
+const assert = require('assert');
+const util = require('../lib/util');
+
+const log = require('minilog')('messages');
+require('minilog').enable();
 
 class MessagesModule extends Module {
-  initialize(core) {
-    core.on('message', this.onMessage.bind(this));
+  initialize() {
+    this.core.on('message', this.onMessage.bind(this));
     this.commands = {};
+    this.aliases = {};
   }
 
   addCommand(name, func) {
     this.commands[name] = func;
   }
 
-  onMessage(message) {
-    Object.keys(this.commands).forEach(command => {
-      if(message.content.substr(0, command.length + 1) == `!${command}`) {
-        let args = message.content.substr(command.length + 2).split(' ');
-        this.commands[command](message, args);
-      }
+  addAlias(name, ...aliases) {
+    assert(typeof this.commands[name] == 'function', `adding an alias for non-existing command ${name}`);
+    aliases.forEach(alias => {
+      this.aliases[alias] = name;
     });
+  }
+
+  onMessage(message) {
+    if(message.content.substr(0, this.core.prefix.length) == this.core.prefix) {
+      let [command, ...args] = message.content.substr(this.core.prefix.length).split(' ');
+      if(this.aliases[command] !== undefined) command = this.aliases[command];
+      if(this.commands[command] !== undefined) {
+        return this.commands[command](message, args);
+      }
+    }
   }
 }
 

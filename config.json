@@ -1,4 +1,9 @@
 {
-	"modules": ["silly"],
+  "prefix": "!",
+	"modules": ["silly", "commands"],
+  "database": {
+    "driver": "mongodb",
+    "url": "mongodb://localhost:27017/YukiBot"
+  },
 	"adminIds": ["49288350644834304", "49321607969116160"]
 }

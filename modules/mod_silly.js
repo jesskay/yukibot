@@ -2,9 +2,12 @@
 
 const Module = require('../lib/Module');
 
+const log = require('minilog')('silly');
+require('minilog').enable();
+
 class SillyModule extends Module {
-  constructor() {
-    super('messages');
+  static get dependencies() {
+    return ['messages'];
   }
 
   initialize(messages) {
