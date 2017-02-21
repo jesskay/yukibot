@@ -28,6 +28,14 @@ exports.load = (registerCommand, registerHandler, moduleStorage) => {
     n = moduleStorage.getItem('poffcount');
   }
 
+  registerCommand('play', [], 'raw', (api, argStr) => {
+    if(api.play(argStr)) {
+      api.reply("Ok! I'm now playing **" + argStr + "**!");
+    } else {
+      api.reply("Ok, I'm no longer playing a game.");
+    }
+  }, 'play [<game>]: Set or clear which game I\'m playing!');
+
   registerCommand('snowpoff', [], '', (api) => {
     if(Math.random() > 0.995) {
       api.say('```\n* Eh?\n* There\'s 30 G inside this... what is this?\n```');
