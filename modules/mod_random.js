@@ -7,16 +7,41 @@ function randomChoice(choices) {
 exports.load = (registerCommand, registerHandler, moduleStorage) => {
   registerCommand('roll', ['dice'], 'words', (api, args) => {
     var rolls = [];
+    var bad_dice = [];
+
+    var internalError = false;
     args.forEach(dice => {
-      if(!(isNaN(parseInt(dice)))) {
-        rolls.push(Math.floor(Math.random() * parseInt(dice)) + 1);
-      };
+      if(dice === "") {
+        dice = "d6";
+      }
+
+      if(dice.match(/\bd?[1-9][0-9]*\b/)) {
+        if(dice[0] === "d") {
+          dice = dice.slice(1);
+        }
+        if(parseInt(dice) === 0) {
+          dice = "6";
+        }
+        var sides = parseInt(dice);
+        rolls.push([sides, Math.floor(Math.random() * parseInt(sides)) + 1]);
+      } else {
+        bad_dice.push(dice);
+        internalError = true;
+        return;
+      }
     });
-    if(rolls.length === 0) {
-      rolls = [Math.floor(Math.random() * 6) + 1];
+
+    if(internalError) {
+      api.reply("Sorry, I didn't understand any of [" + bad_dice.map(d => "'" + d.toString() + "'").join(", ") + "], please use d<number> or <number>.");
+      return;
     }
 
-    api.reply(rolls.map(x => x.toString()).join(', '));
+    api.reply('\n' + rolls.map(roll => {
+      var sides = roll[0];
+      var result = roll[1];
+      
+      return ("d" + sides.toString() + " :game_die:`" + result.toString() + "`")
+    }).join('\n'));
   }, 'roll [<N>...]: Rolls one or more dice with N sides (default 6).');
 
   registerCommand('flip', ['coin'], 'raw', (api, argStr) => {
