@@ -14,7 +14,7 @@ exports.load = (bot) => {
     }
   }, 'reload: Reload all modules [admin only].');
 
-  bot.registerCommand('-core-', 'restart', ['goodbye', 'bye', 'quit'], '', (api) => {
+  bot.registerCommand('-core-', 'restart', ['quit'], '', (api) => {
     if(api.userIsAdmin) {
       console.log('Bye!');
       bot.logout().then(process.exit);
