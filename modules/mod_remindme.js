@@ -59,5 +59,5 @@ exports.load = (registerCommand, registerHandler, moduleStorage, moduleApi) => {
     } else {
       api.reply('Sorry, didn\'t understand that time/date.');
     }
-  }, 'remindme <time/date>[, <msg>]: Set a reminder for Yuki to send you later. Reminders will be posted in the same channel they were requested in.\nThe time/date is fairly flexible and will accept most ways of expressing an exact time/date, or +/- amounts of time.');
+  }, 'remindme DATETIME\nor\nremindme DATETIME, MESSAGE\nSet a reminder for Yuki to send you later, with an optional message (she\'ll repeat that message to you when reminding). Reminders will be posted in the same channel they were requested in.\nExact times mostly work (try formats like MONTH DAY-OF-MONTH TIME if she\'s having trouble understanding how you wrote it), but please be aware she assumes they\'re UTC times. Relative times, such as "+5 hours" also work and are usually easier.');
 };
