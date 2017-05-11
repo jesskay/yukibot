@@ -10,27 +10,61 @@ class MessagesModule extends Module {
     this.core.on('message', this.onMessage.bind(this));
     this.commands = {};
     this.aliases = {};
+    this.parsers = {};
+
+    this.addParser('split', args => [args.split(' ')]);
+    this.addParser('text', args => [args]);
+    this.addParser('match', (args, _, pattern) => args.match(pattern).slice(1));
   }
 
-  addCommand(name, func) {
-    this.commands[name] = func;
+  addCommand(name, parser, func, ...options) {
+    assert(!this.commands[name], `adding a command that already exists: ${name}`);
+    assert.equal(typeof this.parsers[parser], 'function',
+     `adding a command with unknown argument parser: ${name}, ${parser}`);
+    this.commands[name] = {
+      parser,
+      func,
+      options
+    };
   }
 
   addAlias(name, ...aliases) {
-    assert(typeof this.commands[name] == 'function', `adding an alias for non-existing command ${name}`);
+    assert(this.commands[name], `adding an alias for non-existing command: ${name}`);
     aliases.forEach(alias => {
       this.aliases[alias] = name;
     });
   }
 
+  addParser(name, func) {
+    assert(typeof this.parsers[name] == 'undefined', `adding an argument parser that already exists: ${name}`);
+    this.parsers[name] = func;
+  }
+
   onMessage(message) {
-    if(message.content.substr(0, this.core.prefix.length) == this.core.prefix) {
-      let [command, ...args] = message.content.substr(this.core.prefix.length).split(' ');
-      if(this.aliases[command] !== undefined) command = this.aliases[command];
-      if(this.commands[command] !== undefined) {
-        return this.commands[command](message, args);
-      }
-    }
+    const prefix = this.core.prefix;
+    const prefixLen = this.core.prefix.length;
+
+    if(message.content.substr(0, prefixLen) != prefix)
+      return; // Break early if no prefix on message
+
+    let parts = message.content.substr(prefixLen).split(' ');
+    let command = parts[0];
+    let args = parts.slice(1).join(' ');
+
+    if(this.aliases[command] !== undefined) command = this.aliases[command];
+    if(this.commands[command] == undefined)
+      return; // Break if unknown command
+
+    if(!(args = this._parseArguments(command, args, message)))
+      return; // Break if arg parsing fails
+
+    this.commands[command].func(message, ...args);
+  }
+
+  _parseArguments(name, args, message) {
+    assert(this.commands[name], `attempted to parse unknown command ${name}`);
+    const command = this.commands[name];
+    return this.parsers[command.parser](args, message, ...command.options);
   }
 }
 

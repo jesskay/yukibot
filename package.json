@@ -9,9 +9,11 @@
   "author": "Jess Kay",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "github:hydrabolt/discord.js#indev",
+    "discord.js": "^11.1.0",
+    "erlpack": "github:hammerandchisel/erlpack",
     "jsonfile": "^2.4.0",
     "minilog": "^3.1.0",
-    "mongodb": "^2.2.24"
+    "mongodb": "^2.2.24",
+    "uws": "^0.14.5"
   }
 }

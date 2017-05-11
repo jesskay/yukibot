@@ -15,6 +15,10 @@ class DatabaseModule extends Module {
       .then(db => {
         log.info('Connected.');
         this.db = db;
+      })
+      .catch(err => {
+        log.error('Could not connect to MongoDB!');
+        log.error(err);
       });
   }
 

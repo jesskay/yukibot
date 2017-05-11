@@ -9,9 +9,13 @@ class SillyModule extends Module {
   }
 
   initialize(messages) {
-    messages.addCommand('test', (message, args) => {
+    messages.addCommand('test', 'split', (message, args) => {
       message.reply(`Hello, ${message.member.displayName}!`);
     });
+
+    messages.addCommand('test2', 'match', (message, mode, text) => {
+      message.reply(`Hello, ${message.member.displayName}!\nMode: ${mode}\nText: ${text}`);
+    }, /(add|del) (.*?)$/);
   }
 }
 
