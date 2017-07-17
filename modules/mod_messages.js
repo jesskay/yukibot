@@ -12,7 +12,7 @@ class MessagesModule extends Module {
     this.aliases = {};
     this.parsers = {};
 
-    this.addParser('split', args => [args.split(' ')]);
+    this.addParser('split', (args, _, splitter) => [args.split(splitter || ' ')]);
     this.addParser('text', args => [args]);
     this.addParser('match', (args, _, pattern) => args.match(pattern).slice(1));
   }
@@ -42,12 +42,10 @@ class MessagesModule extends Module {
 
   onMessage(message) {
     const prefix = this.core.prefix;
-    const prefixLen = this.core.prefix.length;
-
-    if(message.content.substr(0, prefixLen) != prefix)
+    if(message.content.substr(0, prefix.length) != prefix)
       return; // Break early if no prefix on message
 
-    let parts = message.content.substr(prefixLen).split(' ');
+    let parts = message.content.substr(prefix.length).split(' ');
     let command = parts[0];
     let args = parts.slice(1).join(' ');
 
@@ -59,6 +57,13 @@ class MessagesModule extends Module {
       return; // Break if arg parsing fails
 
     this.commands[command].func(message, ...args);
+  }
+
+  getAliases(command) {
+    if(this.aliases[command] !== undefined) command = this.aliases[command];
+    if(this.commands[command] == undefined) return [];
+
+    return Object.keys(this.aliases).filter(alias => this.aliases[alias] == command);
   }
 
   _parseArguments(name, args, message) {

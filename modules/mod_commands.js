@@ -6,13 +6,14 @@ const log = require('minilog')('commands');
 
 class CommandsModule extends Module {
   static get dependencies() {
-    return ['messages', 'database'];
+    return ['messages', 'help', 'database'];
   }
 
-  initialize(messages, database) {
+  initialize(messages, help, database) {
     this.db = database;
     this.core.on('message', this.onMessage.bind(this));
 
+    // TODO use match arg parser
     messages.addCommand('command', 'split', (message, args) => {
       let collection = this.db.collection('commands', message.guild.id);
       let subcommand = args.shift();
@@ -25,8 +26,13 @@ class CommandsModule extends Module {
             message.reply('added!');
           });
           break;
+        case 'delete':
+        case 'del':
+          // TODO
+          break;
       }
     });
+    help.addEntry('command', 'Manipulate per-server commands.', ['command add <command> <response>']);
     messages.addAlias('command', 'cmd');
   }
 

@@ -4,16 +4,21 @@
   "description": "Discord bot for general channel utilities and whatever else I feel like adding",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "cross-env NODE_ENV=production node ."
   },
   "author": "Jess Kay",
   "license": "MIT",
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "dependencies": {
+    "cross-env": "^5.0.1",
     "discord.js": "^11.1.0",
     "erlpack": "github:hammerandchisel/erlpack",
     "jsonfile": "^2.4.0",
     "minilog": "^3.1.0",
     "mongodb": "^2.2.24",
+    "roll": "^1.2.0",
     "uws": "^0.14.5"
   }
 }
